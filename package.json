@@ -1,0 +1,23 @@
+{
+  "name": "methbot",
+  "version": "0.1.0",
+  "description": "Experiments in IRC botting.",
+  "main": "index.js",
+  "dependencies": {
+    "irc": "^0.5.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/basp/methbot.git"
+  },
+  "author": "Bas Pennings",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/basp/methbot/issues"
+  },
+  "homepage": "https://github.com/basp/methbot#readme"
+}
