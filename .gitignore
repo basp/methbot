@@ -32,9 +32,18 @@ node_modules
 # Optional REPL history
 .node_repl_history
 
-# Generated
+# Artifacts
 *.js
 *.js.map
 
 # Typings
 typings
+
+# Config
+config.ts
+
+# Settings
+.vscode
+
+# Runtime
+methbot.db
