@@ -4,14 +4,19 @@ import moment = require('moment');
 import levelup = require('levelup');
 import sublevel = require('level-sublevel');
 import irc = require('irc');
+import _ = require('lodash');
 
 import {NICK, PWD, CHANNEL} from './config';
+import {trivia} from './random-number-facts';
 
-var greet = require('greetings');
+const greet = require('greetings');
+const speak = require('speakeasy-nlp');
 
 const db = sublevel(levelup('./methbot.db', {
     valueEncoding: 'json'
 }));
+
+const history = db.sublevel('history');
 
 const people = db.sublevel('people');
 
@@ -20,24 +25,32 @@ const client = new irc.Client('irc.freenode.net', NICK, {
 });
 
 client.on('pm', (from, text) => {
-    console.log(text);
+    // var c = speak.classify(text);
+    trivia('random', s => client.say(CHANNEL, s));
 });
 
 client.on('message', (from, to, msg) => {
-    console.log(`${from} => ${to}: ${msg}`);
+    console.log(speak.classify(msg));
 });
 
 client.on('names', (channel, nicks) => {
-    console.log(nicks);
+    var now = moment().toISOString();
+    var batch = _.keys(nicks).map(x => {
+        return {
+            key: x,
+            value: now,
+            type: 'put'
+        };
+    });
+
+    people.batch(batch, (err) => {
+        if (err) console.error(err);
+    });
 });
 
 client.on('join', (channel, nick, msg) => {
-    var val = {
-       lastSeen: moment().toISOString(),
-       raw: msg 
-    };
-    
-    people.put(nick, val, (err) => {
+    var now = moment().toISOString();
+    people.put(nick, now, (err) => {
         if (err) console.error(err);
     });
 });
@@ -47,6 +60,5 @@ client.on('error', (msg) => {
 });
 
 client.join(`${CHANNEL} ${PWD}`, () => {
-    var msg = greet();
-    client.say(CHANNEL, msg);
+    client.say(CHANNEL, greet());
 });
