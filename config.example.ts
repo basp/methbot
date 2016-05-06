@@ -1,9 +1,10 @@
-const NICK = '';
-const PWD = '';
-const CHANNEL = '';
+const config = {
+    nick: '',
+    password: '',
+    channel: '',
+    real: ''
+}
 
 export {
-NICK,
-PWD,
-CHANNEL
+    config
 }

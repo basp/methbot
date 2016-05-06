@@ -46,4 +46,4 @@ config.ts
 .vscode
 
 # Runtime
-methbot.db
+db

@@ -1,64 +1,58 @@
 /// <reference path="typings/main.d.ts" />
 
+import net = require('net');
+import _ = require('lodash');
 import moment = require('moment');
 import levelup = require('levelup');
 import sublevel = require('level-sublevel');
-import irc = require('irc');
-import _ = require('lodash');
+import irc = require('slate-irc');
 
-import {NICK, PWD, CHANNEL} from './config';
-import {trivia} from './random-number-facts';
+import {config as cfg} from './config';
 
-const greet = require('greetings');
-const speak = require('speakeasy-nlp');
-
-const db = sublevel(levelup('./methbot.db', {
+const db = sublevel(levelup('./db', {
     valueEncoding: 'json'
 }));
 
-const history = db.sublevel('history');
-
 const people = db.sublevel('people');
 
-const client = new irc.Client('irc.freenode.net', NICK, {
-    channels: [CHANNEL]
+const stream = net.connect({
+    port: 6667,
+    host: 'irc.freenode.org'
 });
 
-client.on('pm', (from, text) => {
-    // var c = speak.classify(text);
-    trivia('random', s => client.say(CHANNEL, s));
+const client = irc(stream);
+
+var speak = require('speakeasy-nlp');
+var greet = require('greetings');
+
+var sentiment = {};
+
+var counter = 0;
+
+client.pass(cfg.password);
+client.nick(cfg.nick);
+client.user(cfg.nick, cfg.real);
+
+client.join(cfg.channel);
+
+client.names(cfg.channel, (err, names) => {
+    console.log(JSON.stringify(names));
+    switch (names.length) {
+        case 1:
+            return client.send(cfg.channel, `It's lonely in here...`);
+        case 2:
+            return client.send(cfg.channel, `${greet()}`);
+        default:
+            return client.send(cfg.channel, `${greet()} guys!`);
+    }
 });
 
-client.on('message', (from, to, msg) => {
-    console.log(speak.classify(msg));
-});
-
-client.on('names', (channel, nicks) => {
-    var now = moment().toISOString();
-    var batch = _.keys(nicks).map(x => {
-        return {
-            key: x,
-            value: now,
-            type: 'put'
-        };
-    });
-
-    people.batch(batch, (err) => {
-        if (err) console.error(err);
-    });
-});
-
-client.on('join', (channel, nick, msg) => {
-    var now = moment().toISOString();
-    people.put(nick, now, (err) => {
-        if (err) console.error(err);
-    });
-});
-
-client.on('error', (msg) => {
-    console.error(msg);
-});
-
-client.join(`${CHANNEL} ${PWD}`, () => {
-    client.say(CHANNEL, greet());
+client.on('message', e => {
+    var r = speak.sentiment.analyze(e.message);
+    sentiment[e.from] = sentiment[e.from] || 0;
+    sentiment[e.from] += r.score;
+    counter += 1;
+    if (counter % 10 == 0) {
+        client.send(cfg.channel, JSON.stringify(sentiment));
+    }
 });

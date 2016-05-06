@@ -3,7 +3,8 @@
     "irc": "registry:dt/irc#0.3.12+20160317120654",
     "level-sublevel": "registry:dt/level-sublevel#0.0.0+20160316155526",
     "levelup": "registry:dt/levelup#0.0.0+20160316155526",
-    "node": "registry:dt/node#4.0.0+20160505172921"
+    "node": "registry:dt/node#4.0.0+20160505172921",
+    "slate-irc": "registry:dt/slate-irc#0.0.0+20160223124646"
   },
   "dependencies": {
     "lodash": "registry:npm/lodash#4.0.0+20160416211519"
