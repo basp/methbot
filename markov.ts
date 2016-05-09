@@ -1,4 +1,5 @@
 import fs = require('fs');
+import utils = require('./utils/sanitize');
 
 var MarkovChain = require('markovchain');
 
@@ -11,5 +12,9 @@ export class Markov {
     
     random(firstWord: string, numberOfWords = 5): string {
         return this.chain.start(firstWord).end(numberOfWords).process();
+    }
+    
+    parse(s: string) {
+        this.chain.parse(s);
     }
 }

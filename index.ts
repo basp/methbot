@@ -69,10 +69,11 @@ client.on('message', e => {
         var trimmed = S(e.message).stripPunctuation().s.split(' ')
             .map(v => v.trim())
             .map(v => v.toLocaleLowerCase());
-            
+        var joined = trimmed.join(' ');
         var firstWord = _(trimmed).shuffle().first();
         var numberOfWords = Math.floor(Math.random() * 10 + Math.random() * 5) + 5;
         var response = markov.random(firstWord, numberOfWords);
+
         client.send(cfg.channel, S(response).capitalize().s);
     }
 });
