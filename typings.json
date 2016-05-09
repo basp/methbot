@@ -4,7 +4,8 @@
     "level-sublevel": "registry:dt/level-sublevel#0.0.0+20160316155526",
     "levelup": "registry:dt/levelup#0.0.0+20160316155526",
     "node": "registry:dt/node#4.0.0+20160505172921",
-    "slate-irc": "registry:dt/slate-irc#0.0.0+20160223124646"
+    "slate-irc": "registry:dt/slate-irc#0.0.0+20160223124646",
+    "string": "registry:dt/string#0.0.0+20160316155526"
   },
   "dependencies": {
     "lodash": "registry:npm/lodash#4.0.0+20160416211519"

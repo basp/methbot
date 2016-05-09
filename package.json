@@ -13,9 +13,11 @@
     "moment": "^2.13.0",
     "slate-irc": "^0.8.1",
     "speakeasy-nlp": "^0.2.2",
+    "string": "^3.3.1",
     "typings": "^0.8.1"
   },
   "devDependencies": {
+    "split-lines": "^1.0.0",
     "typings": "^0.8.1"
   },
   "scripts": {
