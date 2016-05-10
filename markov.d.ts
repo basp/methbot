@@ -1,6 +1,6 @@
 interface Markov {
-    seed(s: string, cb: () => void): void;
-    seed(s: NodeJS.ReadableStream, cb: () => void): void;
+    seed(s: string, cb?: () => void): void;
+    seed(s: NodeJS.ReadableStream, cb?: () => void): void;
     search(text: string): string;
     pick(): string;
     next(key: string): { key: string, word: string };
