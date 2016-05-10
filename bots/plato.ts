@@ -1,5 +1,3 @@
-import _ = require('lodash');
-
 import {seed} from '../methbot';
 import {config as cfg} from '../config';
 

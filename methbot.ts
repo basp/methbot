@@ -1,9 +1,14 @@
 import fs = require('fs');
 import S = require('string');
+import _ = require('lodash');
 import markov = require('markov');
 
 interface SeedCallback {
     (): void;
+}
+
+interface ModeCallback {
+    (mode: BotMode): void;
 }
 
 interface RespondFunc {
@@ -12,6 +17,16 @@ interface RespondFunc {
 
 interface GreetFunc {
     (names: string[]): string;
+}
+
+interface BotMode {
+    greet(names: string[]): string;
+    respond(text: string): string;
+}
+
+interface BotModeConfig {
+    key: string;
+    source: string;
 }
 
 const m = markov();
@@ -31,9 +46,8 @@ function respond(text: string): string {
 }
 
 export {
-    SeedCallback,
-    RespondFunc,
-    GreetFunc,
-    respond,
-    seed
+BotMode,
+BotModeConfig,
+respond,
+seed
 }

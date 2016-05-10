@@ -25,5 +25,6 @@ function greet(names: string[]): string {
 }
 
 export {
-greet
+greet,
+respond
 }

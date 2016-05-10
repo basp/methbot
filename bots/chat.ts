@@ -1,6 +1,6 @@
 import greetings = require('greetings');
 
-import {seed} from '../methbot';
+import {seed, BotMode, BotModeConfig} from '../methbot';
 import {config as cfg} from '../config';
 
 const respond = seed(cfg.sources.chat);
