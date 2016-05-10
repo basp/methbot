@@ -39,11 +39,13 @@ node_modules
 # Typings
 typings
 
-# Config
-config.ts
-
 # Settings
 .vscode
+
+# Private
+config.ts
+sanitize.ts
+test.ts
 
 # Runtime
 db
