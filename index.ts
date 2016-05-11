@@ -8,8 +8,8 @@ import S = require('string');
 import moment = require('moment');
 import {cat, catWithName} from './random-cat';
 import {config as cfg} from './config';
-import {bot, greet} from './bots/chat';
-import {bot as catBot} from './cat-stories';
+import * as bot from './bots/chat';
+import * as catBot from './cat-stories';
 
 // TODO: Allow for parsing cat names from request
 // TODO: Include nick in response if especially slow
@@ -38,7 +38,7 @@ client.names(cfg.channel, (err, people) => {
     console.log(names);
 
     setTimeout(() => {
-        var greeting = greet(names);
+        var greeting = bot.greet(names);
         client.send(cfg.channel, greeting);
     }, effort);
 });
@@ -86,7 +86,7 @@ client.on('message', e => {
     if (S(e.message.toLowerCase()).contains('cat')) {
         setTimeout(() => {
             const portrait = catWithName();
-            const description = catBot.respond(e.message);
+            const description = catBot.bot.respond(e.message);
             client.send(cfg.channel, `${portrait}, description: ${description}`);
         }, effort);
         return;
@@ -94,7 +94,7 @@ client.on('message', e => {
 
     if (S(e.message.toLowerCase()).contains('cats')) {
         setTimeout(() => {
-            client.send(cfg.channel, catBot.respond(e.message));
+            client.send(cfg.channel, catBot.bot.respond(e.message));
         }, effort);
         return;
     }
@@ -124,7 +124,7 @@ client.on('join', e => {
 
     var effort = Math.random() * cfg.slowness;
     setTimeout(() => {
-        client.send(cfg.channel, greet([e.nick]));
+        client.send(cfg.channel, bot.greet([e.nick]));
     }, effort);
 });
 

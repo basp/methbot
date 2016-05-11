@@ -1,13 +1,13 @@
-import {MarkovBot} from '../methbot';
+import {seed} from '../methbot';
 import {config as cfg} from '../config';
 
-const bot = new MarkovBot(cfg.sources.plato);
+const respond = seed(cfg.sources.plato);
 
 function greet() {
-    return bot.respond('bastard');
+    return respond('bastard');
 }
 
 export {
-bot,
+respond,
 greet
 }
