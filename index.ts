@@ -8,8 +8,13 @@ import S = require('string');
 import moment = require('moment');
 import {cat, catWithName} from './random-cat';
 import {config as cfg} from './config';
-import * as bot from './bots/chat';
-import * as catBot from './cat-stories';
+import {bot, greet} from './bots/chat';
+import {bot as catBot} from './cat-stories';
+
+// TODO: Allow for parsing cat names from request
+// TODO: Include nick in response if especially slow
+// TODO: Remember spawned cats (and stories for consistencie)
+// TODO: Allow people to ask about spawned cats 
 
 const stream = net.connect({
     port: 6667,
@@ -33,7 +38,7 @@ client.names(cfg.channel, (err, people) => {
     console.log(names);
 
     setTimeout(() => {
-        var greeting = bot.greet(names);
+        var greeting = greet(names);
         client.send(cfg.channel, greeting);
     }, effort);
 });
@@ -119,19 +124,20 @@ client.on('join', e => {
 
     var effort = Math.random() * cfg.slowness;
     setTimeout(() => {
-        client.send(cfg.channel, bot.greet([e.nick]));
+        client.send(cfg.channel, greet([e.nick]));
     }, effort);
 });
 
-const NOISE_DELAY = 5; // m 
+const SPAWN_DELAY = 5; // minites 
 const humanizeDuration = require('humanize-duration');
+const cats = {};
 
 setInterval(() => {
     const chance = 1.0;
     const doCat = Math.random() > (1 - chance);
     if (doCat) {
-        var msOnline = moment().diff(started);
-        var dur = humanizeDuration(msOnline);
+        var ms = moment().diff(started);
+        var dur = humanizeDuration(ms);
         client.send(cfg.channel, `${catWithName()} (${dur})`);
     }
-}, NOISE_DELAY * 60 * 1000);
+}, SPAWN_DELAY * 60 * 1000);

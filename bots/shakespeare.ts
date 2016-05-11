@@ -1,7 +1,8 @@
-import {seed} from '../methbot';
+import {MarkovBot} from '../methbot';
 import {config as cfg} from '../config';
 
-const respond = seed(cfg.sources.shakespeare);
+
+const bot = new MarkovBot(cfg.sources.shakespeare);
 
 function greet(names: string[]): string {
     const greetings = {
@@ -25,6 +26,6 @@ function greet(names: string[]): string {
 }
 
 export {
-greet,
-respond
+bot,
+greet
 }

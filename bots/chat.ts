@@ -1,9 +1,9 @@
 import greetings = require('greetings');
 
-import {seed, BotMode, BotModeConfig} from '../methbot';
+import {MarkovBot, BotMode, BotModeConfig} from '../methbot';
 import {config as cfg} from '../config';
 
-const respond = seed(cfg.sources.chat);
+const bot = new MarkovBot(cfg.sources.chat);
 
 function greet(names: string[]): string {
     console.log(names);
@@ -14,6 +14,6 @@ function greet(names: string[]): string {
 }
 
 export {
-respond,
+bot,
 greet
 }

@@ -19,6 +19,7 @@ interface GreetFunc {
     (names: string[]): string;
 }
 
+// Rename to Bot?
 interface BotMode {
     greet(names: string[]): string;
     respond(text: string): string;
@@ -29,25 +30,29 @@ interface BotModeConfig {
     source: string;
 }
 
+// DEPRECATED
 const m = markov();
 
-function seed(filename: string, callback?: SeedCallback): RespondFunc {
-    const s = fs.createReadStream(filename);
-    m.seed(s, callback);
-    return respond;
-}
+// Or implement BotMode?
+class MarkovBot {
+    private m: Markov;
 
-function respond(text: string): string {
-    const res = m.respond(text)
-        .map(x => S(x).trim().s.toLowerCase())
-        .join(' ');
+    constructor(filename: string, order = 2) {
+        this.m = markov(order);
+        this.m.seed(filename);
+    }
 
-    return S(res).capitalize().s;
+    public respond(text: string) {
+        const res = this.m.respond(text)
+            .map(x => S(x).trim().s.toLowerCase())
+            .join(' ');
+
+        return S(res).capitalize().s;
+    }
 }
 
 export {
 BotMode,
 BotModeConfig,
-respond,
-seed
+MarkovBot
 }
