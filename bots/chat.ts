@@ -8,7 +8,7 @@ const respond = seed(cfg.sources.chat);
 function greet(names: string[]): string {
     console.log(names);
     switch (names.length) {
-        case 1: return `${greetings()}`;
+        case 1: return `${greetings()} ${names[0]}!`;
         default: return `${greetings()} guys!`;
     }
 }

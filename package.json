@@ -4,7 +4,9 @@
   "description": "Experiments in IRC botting.",
   "main": "index.js",
   "dependencies": {
+    "cat-names": "^1.0.2",
     "greetings": "^1.0.0",
+    "humanize-duration": "^3.7.1",
     "level-sublevel": "^6.5.4",
     "leveldown": "^1.4.6",
     "levelup": "^1.3.1",
