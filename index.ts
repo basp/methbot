@@ -128,7 +128,7 @@ client.on('join', e => {
     }, effort);
 });
 
-const SPAWN_DELAY = 5; // minites 
+const SPAWN_DELAY = 5; // minutes 
 const humanizeDuration = require('humanize-duration');
 const cats = {};
 
