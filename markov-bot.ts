@@ -15,6 +15,14 @@ export class MarkovBot {
         return 'TILT';
     }
 
+    public story(text: string, min: number): string {
+        const res = this.m.respond(text, Math.random() * 50 + min)
+            .map(x => S(x).trim().s.toLowerCase())
+            .join(' ');
+
+        return S(res).capitalize().s;
+    }
+
     public respond(text: string): string {
         const res = this.m.respond(text)
             .map(x => S(x).trim().s.toLowerCase())

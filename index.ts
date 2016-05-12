@@ -57,18 +57,31 @@ function shouldReply(nick: string, text: string): boolean {
     // HACK: Make this configurable (with aliases in cfg)
 
     // Return stuff when asked a question
-    if (lastOneWhoSpoke && S(text).trim().endsWith('?')) {
+    if (S(text).trim().endsWith('?')) {
         return true;
     }
 
+    // Return stuff when asked a question
+    if (S(text).trim().endsWith('!')) {
+        return true;
+    }
+    
     if (S(text.toLowerCase()).contains('meth')) {
         return true;
     }
+    
     if (S(text.toLowerCase()).contains('methbot')) {
         return true;
     }
-
+    
+    if (S(text.toLowerCase()).contains('bot')) {
+        return true;
+    }   
+    
     var chance = 0.08;
+    
+    // Should reply more often when only 1 message in between
+    
     if (pendingReplies[nick]) {
         chance = 0.001;
     }
@@ -77,7 +90,28 @@ function shouldReply(nick: string, text: string): boolean {
     return r > (1 - chance);
 }
 
-var lastOneWhoSpoke = false;
+const alternativeRefs = [
+    'my dear',
+    'you lovely',
+    'and I\'m like...',
+    'but it\'s all crazy anyway',
+    'and from there all went downhill',
+    'I love talking about this stuff',
+    'yikes...',
+    'and so are you!'
+];
+
+function randomlyReplaceSelfRef(x: string): string {
+    if (x.toLowerCase() == cfg.nick.toLowerCase()) {
+        var r = Math.random();
+        if (r < 1 - 0.05) {
+            var i = Math.floor(Math.random() * alternativeRefs.length);
+            return alternativeRefs[i];
+        }
+    }
+    
+    return x;
+}
 
 // TODO: This whole thing is getting out of control
 client.on('message', e => {
@@ -101,6 +135,14 @@ client.on('message', e => {
         }, effort);
         return;
     }
+    
+    if(S(e.message.toLowerCase()).contains(' story ')) {
+        console.log('Asked for a story');
+        setTimeout(function() {
+            client.send(cfg.channel, catBot.bot.story(e.message, 500));            
+        }, effort);
+        return;
+    }
 
     if (!shouldReply(e.from, e.message)) return;
 
@@ -114,8 +156,12 @@ client.on('message', e => {
 
     pendingReplies[e.from] = true;
     setTimeout(() => {
-        client.send(cfg.channel, bot.respond(e.message));
-        lastOneWhoSpoke = true;
+        var raw = bot.respond(e.message);
+        var res = raw.split(' ')
+            .map(x => randomlyReplaceSelfRef(x))
+            .join(' ');
+            
+        client.send(cfg.channel, res);                        
         pendingReplies[e.from] = false;
     }, effort);
 });
@@ -141,6 +187,7 @@ setInterval(() => {
     if (doCat) {
         var ms = moment().diff(started);
         var dur = humanizeDuration(ms);
-        client.send(cfg.channel, `${catWithName()} (${dur})`);
+        // client.send(cfg.channel, `${catWithName()} (${dur})`);
+        client.send(cfg.channel, `${catWithName()}`);
     }
 }, SPAWN_DELAY * 60 * 1000);
