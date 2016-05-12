@@ -1,7 +1,8 @@
 import fs = require('fs');
 import S = require('string');
 import _ = require('lodash');
-import markov = require('markov');
+
+var markov = require('markov');
 
 interface SeedCallback {
     (): void;

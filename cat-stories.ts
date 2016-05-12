@@ -1,4 +1,4 @@
-import {MarkovBot} from './methbot';
+import {MarkovBot} from './markov-bot';
 import {config as cfg} from './config';
 import {cat} from './random-cat';
 

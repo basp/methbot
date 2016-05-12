@@ -11,10 +11,12 @@ import {config as cfg} from './config';
 import * as bot from './bots/chat';
 import * as catBot from './cat-stories';
 
+// TODO: Spawn a cat for a specific person
 // TODO: Allow for parsing cat names from request
 // TODO: Include nick in response if especially slow
 // TODO: Remember spawned cats (and stories for consistencie)
 // TODO: Allow people to ask about spawned cats 
+// TODO: Allow for a slight chance of bot not replying to nick 
 
 const stream = net.connect({
     port: 6667,
@@ -53,12 +55,12 @@ const chanceOfCat = 0.02;
 
 function shouldReply(nick: string, text: string): boolean {
     // HACK: Make this configurable (with aliases in cfg)
+
     // Return stuff when asked a question
     if (lastOneWhoSpoke && S(text).trim().endsWith('?')) {
         return true;
     }
 
-    // Return on name alias    
     if (S(text.toLowerCase()).contains('meth')) {
         return true;
     }
@@ -83,16 +85,17 @@ client.on('message', e => {
 
     // HACK: This code path totally doesn't belong here
     // TODO: These are basically commands, implement them as such
-    if (S(e.message.toLowerCase()).contains('cat')) {
+    if (S(e.message.toLowerCase()).contains(' cat ')) {
         setTimeout(() => {
             const portrait = catWithName();
             const description = catBot.bot.respond(e.message);
-            client.send(cfg.channel, `${portrait}, description: ${description}`);
+            client.send(cfg.channel, `${portrait} "${description}"`);
         }, effort);
         return;
     }
 
-    if (S(e.message.toLowerCase()).contains('cats')) {
+    if (S(e.message.toLowerCase()).contains(' cats ')) {
+        var r = Math.random();
         setTimeout(() => {
             client.send(cfg.channel, catBot.bot.respond(e.message));
         }, effort);
