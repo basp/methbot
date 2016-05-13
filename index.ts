@@ -10,6 +10,7 @@ import {cat, catWithName} from './random-cat';
 import {config as cfg} from './config';
 import * as bot from './bots/chat';
 import * as catBot from './cat-stories';
+import {trivia} from './random-number-facts';
 
 // TODO: Spawn a cat for a specific person
 // TODO: Allow for parsing cat names from request
@@ -65,23 +66,23 @@ function shouldReply(nick: string, text: string): boolean {
     if (S(text).trim().endsWith('!')) {
         return true;
     }
-    
+
     if (S(text.toLowerCase()).contains('meth')) {
         return true;
     }
-    
+
     if (S(text.toLowerCase()).contains('methbot')) {
         return true;
     }
-    
+
     if (S(text.toLowerCase()).contains('bot')) {
         return true;
-    }   
-    
+    }
+
     var chance = 0.08;
-    
+
     // Should reply more often when only 1 message in between
-    
+
     if (pendingReplies[nick]) {
         chance = 0.001;
     }
@@ -109,13 +110,22 @@ function randomlyReplaceSelfRef(x: string): string {
             return alternativeRefs[i];
         }
     }
-    
+
     return x;
 }
 
 // TODO: This whole thing is getting out of control
 client.on('message', e => {
     const effort = Math.random() * cfg.slowness + cfg.lag;
+
+    if (S(e.message.toLowerCase()).contains(' number fact')) {
+        setTimeout(() => {
+            trivia(Math.random() * 100000, s => {
+                client.send(cfg.channel, `${s}`);
+            });
+        }, effort);
+        return;
+    }
 
     // HACK: This code path totally doesn't belong here
     // TODO: These are basically commands, implement them as such
@@ -135,11 +145,11 @@ client.on('message', e => {
         }, effort);
         return;
     }
-    
-    if(S(e.message.toLowerCase()).contains(' story ')) {
+
+    if (S(e.message.toLowerCase()).contains(' story ')) {
         console.log('Asked for a story');
-        setTimeout(function() {
-            client.send(cfg.channel, catBot.bot.story(e.message, 500));            
+        setTimeout(function () {
+            client.send(cfg.channel, catBot.bot.story(e.message, 500));
         }, effort);
         return;
     }
@@ -160,8 +170,8 @@ client.on('message', e => {
         var res = raw.split(' ')
             .map(x => randomlyReplaceSelfRef(x))
             .join(' ');
-            
-        client.send(cfg.channel, res);                        
+
+        client.send(cfg.channel, res);
         pendingReplies[e.from] = false;
     }, effort);
 });
@@ -188,6 +198,9 @@ setInterval(() => {
         var ms = moment().diff(started);
         var dur = humanizeDuration(ms);
         // client.send(cfg.channel, `${catWithName()} (${dur})`);
-        client.send(cfg.channel, `${catWithName()}`);
+        // client.send(cfg.channel, `${catWithName()}`);
+        var fact = trivia(Math.random() * 100000, s => {
+            client.send(cfg.channel, s);
+        });
     }
 }, SPAWN_DELAY * 60 * 1000);
