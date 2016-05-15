@@ -79,7 +79,7 @@ function shouldReply(nick: string, text: string): boolean {
         return true;
     }
 
-    var chance = 0.08;
+    var chance = 0.06;
 
     // Should reply more often when only 1 message in between
 
@@ -92,20 +92,21 @@ function shouldReply(nick: string, text: string): boolean {
 }
 
 const alternativeRefs = [
-    'my dear',
-    'you lovely',
-    'and I\'m like...',
-    'but it\'s all crazy anyway',
-    'and from there all went downhill',
-    'I love talking about this stuff',
-    'yikes...',
-    'and so are you!'
+    'dear',
+    'sweety',
+    'silly',
+    'you silly'
 ];
 
 function randomlyReplaceSelfRef(x: string): string {
-    if (x.toLowerCase() == cfg.nick.toLowerCase()) {
+    if (x.length < 4) {
+        return x;
+    }
+
+    if (x.toLowerCase() == cfg.nick.substr(0, x.length).toLowerCase()) {
         var r = Math.random();
-        if (r < 1 - 0.05) {
+        var chance = 0.95;
+        if (r > (1 - chance)) {
             var i = Math.floor(Math.random() * alternativeRefs.length);
             return alternativeRefs[i];
         }
@@ -197,10 +198,57 @@ setInterval(() => {
     if (doCat) {
         var ms = moment().diff(started);
         var dur = humanizeDuration(ms);
-        // client.send(cfg.channel, `${catWithName()} (${dur})`);
-        // client.send(cfg.channel, `${catWithName()}`);
-        var fact = trivia(Math.random() * 100000, s => {
-            client.send(cfg.channel, s);
-        });
+        var r = Math.random();
+        if (r > 0) {
+            client.names(cfg.channel, (err, people) => {
+                if (err) return console.error(err);
+                var names = people
+                    .filter(x => x.name != cfg.nick)
+                    .map(x => x.name);
+
+                var i;
+
+                i = Math.floor(Math.random() * names.length);
+                var nick = names[i];
+
+                var actions = [
+                    'hugs',
+                    'smiles at',
+                    'blows a kiss at',
+                    'giggles at',
+                    'flirts with',
+                    'winks at',
+                    'pokes',
+                    'sneaks up to',
+                    'dances around'
+                ];
+
+                i = Math.floor(Math.random() * actions.length);
+                var action = actions[i];
+
+                var msg = `${action} ${nick}`;
+                console.log(msg);
+                // client.send(cfg.channel, bot.respond(names[i]));
+                client.action(cfg.channel, msg);
+
+            });
+            return;
+        }
+
+        if (r > 0.8) {
+            var fact = trivia(Math.random() * 100000, s => {
+                client.send(cfg.channel, s);
+            });
+            return;
+        }
+
+        if (r > 0.7) {
+            client.send(cfg.channel, `${catWithName()}`);
+            return;
+        }
+
+        if (r > 0.6) {
+            client.send(cfg.channel, bot.respond('the'));
+        }
     }
 }, SPAWN_DELAY * 60 * 1000);

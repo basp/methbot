@@ -3,7 +3,7 @@ import http = require('http');
 function trivia(number: string | number, callback: (s: string) => void) {
     const opts = {
         hostname: 'numbersapi.com',
-        path: `/${number}/trivia`
+        path: `/random/trivia`
     };
 
     var buf = '';
