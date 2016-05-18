@@ -188,7 +188,7 @@ client.on('join', e => {
     }, effort);
 });
 
-const SPAWN_DELAY = 5; // minutes 
+const SPAWN_DELAY = 15; // minutes 
 const humanizeDuration = require('humanize-duration');
 const cats = {};
 
@@ -199,7 +199,7 @@ setInterval(() => {
         var ms = moment().diff(started);
         var dur = humanizeDuration(ms);
         var r = Math.random();
-        if (r > 0) {
+        if (r > 0.9) {
             client.names(cfg.channel, (err, people) => {
                 if (err) return console.error(err);
                 var names = people
